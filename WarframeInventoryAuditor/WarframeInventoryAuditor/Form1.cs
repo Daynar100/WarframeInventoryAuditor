@@ -74,11 +74,11 @@ namespace WarframeInventoryAuditor
             relics.Add(new Relic(this,"Axi V6", "Ballistica Prime Lower Limb", "Braton Prime Blueprint", "Forma Blueprint", "Fang Prime Handle", "Galatine Prime Handle", "Valkyr Prime Chassis"));
             relics.Add(new Relic(this,"Axi V7", "Lex Prime Barrel", "Nami Skyla Prime Blueprint", "Valkyr Prime Blueprint", "Kogake Prime Blueprint", "Silva & Aegis Prime Blueprint", "Venka Prime Gauntlet"));
             GetItems();
-            if (File.Exists("inventory.txt"))
+            /*if (File.Exists("inventory.txt"))
             {
-                inventory = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Tuple<String,uint>>>(File.ReadAllText("inventory.txt"));
-                PopulateItemBox();
-            }
+                //inventory = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Tuple<String,uint>>>(File.ReadAllText("inventory.txt"));
+                //PopulateItemBox();
+            }*/
             //UpdateItemData("primed continuity");
             //UpdateItemPrice("lex prime barrel");
         }
@@ -514,7 +514,7 @@ namespace WarframeInventoryAuditor
         private Tuple<String, uint> ParseMod()
         {
             String text = "";
-            using (var ocrEngine = new TesseractEngine(@"C:\Users\William\Documents\visual studio 2017\Projects\WarframeInventoryAuditor\WarframeInventoryAuditor\x86\tessdata", @"eng", EngineMode.TesseractOnly, @"Mods.txt"))
+            using (var ocrEngine = new TesseractEngine(@"tessdata", @"eng", EngineMode.TesseractOnly, @"Mods.txt"))
             {
                 //name
                 while (true)
