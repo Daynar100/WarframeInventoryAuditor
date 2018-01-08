@@ -6,7 +6,7 @@ I am not very experienced with any of the tools used, so code is likely subpar a
 The warframe market api specifies a maximum of 3rps, which is why it may take a while for things to load the first time around.
 Note that it is extreemly easy to manipulate warframe market statisitics. Do not trust the values here 100%. If something seems wrong, it probably is.
 
-The inventory scanner will likely not work if your screen is not the same size as mine. (1920x1080) Be sure to have the game in Borderless Fullscreen mode before atempting to scan.
+The inventory scanner will likely not work if your screen size is not the same size as mine. (1920x1080) Be sure to have the game in Borderless Fullscreen mode before atempting to scan.
 To scan open up the inventory menu and open the "Prime Part" tab.
 Be sure the scroll bar at the bottom is all the way to the left and then hit the audit button on this application. It is best if it is open in another window, but it should work either way.
 Wait until the application automatically scrolls through the entire tab to do anything.
