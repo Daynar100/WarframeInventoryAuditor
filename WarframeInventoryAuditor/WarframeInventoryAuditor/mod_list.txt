@@ -1,0 +1,244 @@
+﻿Abating Link
+Acrobat
+Adept Surge
+Adrenaline Boost
+Affinity Amp
+Afterburn
+Agility Drift
+Air Thrusters
+Anticipation
+Antimatter Absorb
+Antitoxin
+Armored Acrobatics
+Armored Agility
+Armored Evade
+Armored Recovery
+Assimilate
+Augur Accord
+Augur Message
+Augur Pact
+Augur Reach
+Augur Secrets
+Aviator
+Ballistic Bullseye
+Battering Maneuver
+Beguiling Lantern
+Blind Rage
+Calculated Spring
+Calm & Frenzy
+Capacitance
+Cataclysmic Continuum
+Chaos Sphere
+Chilling Globe
+Chromatic Blade
+Coaction Drift
+Constitution
+Contagion Cloud
+Continuity
+Corroding Barrage
+Corrosive Projection
+Creeping Terrify
+Cunning Drift
+Curative Undertow
+Dead Eye
+Defiled Reckoning
+Despoil
+Diamond Skin
+Divebomb Vortex
+Duality
+Elemental Sandstorm
+EMP Aura
+Endurance Drift
+Enemy Radar
+Enemy Sense
+Energy Conversion
+Energy Siphon
+Enguard
+Equilibrium
+Escape Velocity
+Eternal War
+Everlasting Ward
+Explosive Legerdemain
+Fast Deflection
+Fatal Teleport
+Final Act
+Fire Fright
+Fireball Frenzy
+F cont.
+Firequake
+Firewalker
+Flame Repellent
+Flash Accelerant
+Fleeting Expertise
+Flow
+Follow Through
+Fortitude
+Fracturing Crush
+Freeze Force
+Funnel Clouds
+Furious Javelin
+Greedy Pull
+Guided Effigy
+Hall of Malevolence
+Hallowed Eruption
+Hallowed Reckoning
+Handspring
+Hastened Steps
+Haven
+Health Conversion
+Heavy Impact
+Heightened Reflexes
+Hushed Invisibility
+Hysterical Assault
+Hysterical Fixation
+Ice Spring
+Ice Wave Impedance
+Icy Avalanche
+Infested Impedance
+Infiltrate
+Insulation
+Intensify
+Intruder
+Iron Shrapnel
+Iron Vault
+Ironclad Charge
+Irradiating Disarm
+Jet Stream
+Kinetic Collision
+Laser Deflection
+Lightning Dash
+Lightning Rod
+Loot Detector
+Maglev
+Magnetized Discharge
+Marathon
+Master Thief
+Mesa's Waltz
+Mind Freak
+Mobilize
+Muzzle Flash
+Narrow Minded
+Natural Talent
+Negation Swarm
+Neutron Star
+No Current Leap
+Ore Gaze
+Overcharged
+Overextended
+Pacifying Bolts
+Pain Threshold
+Patagium
+Path of Statues
+Peaceful Provocation
+Perpetual Vortex
+Phoenix Renewal
+Physique
+Piercing Navigator
+Piercing Roar
+Piercing Step
+Pilfering Swarm
+Pistol Amp
+Pistol Scavenger
+Pool of Life
+Power Drift
+Power of Three
+Primal Rage
+Primed Continuity
+Primed Flow
+Prism Guard
+Prolonged Paralysis
+Provoked
+Purging Slash
+Purifying Flames
+Push & Pull
+Pyroclastic Flow
+Quick Charge
+Quick Rest
+Quick Thinking
+Radial Blast
+Radiant Finish
+Rage
+Rapid Resilience
+Recharge Barrier
+Redirection
+Reflection
+Reflex Guard
+Regenerative Molt
+Reinforcing Stomp
+Rejuvenation
+Rending Turn
+Repelling Bastille
+Resilient Focus
+Resonance
+Resonating Quake
+Retribution
+Rifle Amp
+Rifle Scavenger
+Rift Torrent
+Rime Vault
+Rising Skill
+Rising Storm
+Rumbled
+Rush
+Safeguard
+Safeguard Switch
+Sapping Reach
+Savage Silence
+Savior Decoy
+Searing Leap
+Seeking Shuriken
+Shield Disruption
+Shield Flux
+Shield of Shadows
+Shield Overload
+Shield Transference
+Shock Absorbers
+Shock Trooper
+Shocking Speed
+Shotgun Amp
+Shotgun Scavenger
+Signal Flare
+Singularity
+Smite Infusion
+Smoke Shadow
+Sniper Scavenger
+Sonic Fracture
+Soul Survivor
+Speed Drift
+Speed Holster
+Sprint Boost
+Staggering Shield
+Stealth Drift
+Steel Charge
+Steel Fiber
+Streamline
+Streamlined Form
+Stretch
+Sure Footed
+Surging Dash
+Swing Line
+Tactical Retreat
+Tear Gas
+Tectonic Fracture
+Tempered Bound
+Tesla Link
+Thief's Wit
+Tidal Impunity
+Titanic Rumbler
+Total Eclipse
+Toxic Flight
+Toxin Resistance
+Transient Fortitude
+Transistor Shield
+Undying Will
+Vampire Leech
+Venom Dose
+Venomous Rise
+Vexing Retaliation
+Vigor
+Vital Systems Bypass
+Vitality
+Voltaic Lance
+Overcharge Detectors
+Surplus Diverters
+Warm Coat
