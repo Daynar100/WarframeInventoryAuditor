@@ -20,67 +20,22 @@ namespace WarframeInventoryAuditor
     
     public partial class Form1 : Form
     {
-        Dictionary<String, Dictionary<String, String>> items = new Dictionary<String, Dictionary<String, String>>();
-        //Dictionary<String, uint> inventory = new Dictionary<String, uint>();
         List<Tuple<String,uint>> inventory = new List<Tuple<String, uint>>();
-        public List<Relic> relics = new List<Relic>();
-        HttpClient client = new HttpClient();
-        HttpClient image_client = new HttpClient();
-        bool image_request = false;
         private Button btnModAnalysis;
         private Button btnRelicAnalysis;
         private Label lblPTotal;
         private Panel pnlInv;
         private Button btnRelicOpening;
-        private Button button2;
         private PictureBox pictureBox1;
         private RichTextBox richTextBox1;
         private Button button1;
-        String log = "";
+
+        DataHandler dh;
+
         public Form1()
         {
             InitializeComponent();
-            System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
-            client.BaseAddress = new Uri("https://api.warframe.market/v1/");
-            image_client.BaseAddress = new Uri("https://warframe.market/static/assets/");
-            client.DefaultRequestHeaders.Add("Platform", "pc");
-            client.DefaultRequestHeaders.Add("Language", "en");
-
-            relics.Add(new Relic(this,"Lith A2", "Forma Blueprint", "Lex Prime Barrel", "Valkyr Prime Blueprint", "Akbronco Prime Link", "Cernos Prime Blueprint", "Akstiletto Prime Blueprint"));
-            relics.Add(new Relic(this,"Lith B2", "Forma Blueprint", "Paris Prime Lower Limb", "Tigris Prime Stock", "Braton Prime Receiver", "Orthos Prime Blade", "Ballistica Prime Blueprint"));
-            relics.Add(new Relic(this,"Lith C2", "Bronco Prime Receiver", "Paris Prime Upper Limb", "Venka Prime Blades", "Akbolto Prime Barrel", "Nami Skyla Prime Handle", "Cernos Prime Lower Limb"));
-            relics.Add(new Relic(this,"Lith N3", "Burston Prime Receiver", "Sybaris Prime Stock", "Valkyr Prime Blueprint", "Braton Prime Blueprint", "Forma Blueprint", "Nekros Prime Blueprint"));
-            relics.Add(new Relic(this,"Lith S7", "Galatine Prime Blade", "Lex Prime Blueprint", "Mirage Prime Chassis", "Akbolto Prime Link", "Paris Prime Grip", "Sybaris Prime Barrel"));
-            relics.Add(new Relic(this,"Lith T1", "Akbronco Prime Blueprint", "Burston Prime Blueprint", "Forma Blueprint", "Ballistica Prime Upper Limb", "Valkyr Prime Neuroptics", "Tigris Prime Blueprint"));
-            relics.Add(new Relic(this,"Lith V2", "Fang Prime Blueprint", "Lex Prime Barrel", "Paris Prime Lower Limb", "Forma Blueprint", "Paris Prime Upper Limb", "Vauban Prime Neuroptics"));
-            relics.Add(new Relic(this,"Lith V3", "Braton Prime Blueprint", "Cernos Prime Upper Limb", "Paris Prime Lower Limb", "Helios Prime Systems", "Tigris Prime Barrel", "Valkyr Prime Neuroptics"));
-            relics.Add(new Relic(this,"Meso G1", "Braton Prime Barrel", "Forma Blueprint", "Venka Prime Blades", "Ballistica Prime String", "Silva & Aegis Prime Blade", "Galatine Prime Blueprint"));
-            relics.Add(new Relic(this,"Meso H1", "Hydroid Prime Chassis", "Mirage Prime Neuroptics", "Paris Prime Blueprint", "Fragor Prime Blueprint", "Oberon Prime Blueprint", "Helios Prime Cerebrum"));
-            relics.Add(new Relic(this,"Meso K1", "Cernos Prime Upper Limb", "Nekros Prime Chassis", "Orthos Prime Handle", "Akstiletto Prime Barrel", "Tigris Prime Receiver", "Kogake Prime Gauntlet"));
-            relics.Add(new Relic(this,"Meso N5", "Braton Prime Stock", "Forma Blueprint", "Lex Prime Receiver", "Hydroid Prime Blueprint", "Tigris Prime Receiver", "Nekros Prime Neuroptics"));
-            relics.Add(new Relic(this,"Meso O1", "Akbronco Prime Blueprint", "Forma Blueprint", "Paris Prime Lower Limb", "Akstiletto Prime Link", "Cernos Prime String", "Oberon Prime Neuroptics"));
-            relics.Add(new Relic(this,"Neo B2", "Braton Prime Stock", "Fang Prime Blueprint", "Tigris Prime Stock", "Forma Blueprint", "Venka Prime Blueprint", "Banshee Prime Chassis"));
-            relics.Add(new Relic(this,"Neo H1", "Burston Prime Receiver", "Fragor Prime Head", "Orthos Prime Handle", "Banshee Prime Blueprint", "Tigris Prime Barrel", "Hydroid Prime Neuroptics"));
-            relics.Add(new Relic(this,"Neo M1", "Akbolto Prime Blueprint", "Bronco Prime Blueprint", "Paris Prime String", "Euphona Prime Barrel", "Helios Prime Blueprint", "Mirage Prime Blueprint"));
-            relics.Add(new Relic(this,"Neo S7", "Banshee Prime Neuroptics", "Fang Prime Blade", "Helios Prime Carapace", "Ballistica Prime Receiver", "Sybaris Prime Receiver", "Silva & Aegis Prime Guard"));
-            relics.Add(new Relic(this,"Neo V2", "Braton Prime Stock", "Fang Prime Handle", "Galatine Prime Blade", "Forma Blueprint", "Galatine Prime Handle", "Vauban Prime Blueprint"));
-            relics.Add(new Relic(this,"Neo V5", "Helios Prime Carapace", "Paris Prime String", "Silva & Aegis Prime Hilt", "Burston Prime Barrel", "Forma Blueprint", "Vauban Prime Neuroptics"));
-            relics.Add(new Relic(this,"Neo V6", "Burston Prime Stock", "Cernos Prime Grip", "Forma Blueprint", "Fragor Prime Handle", "Mirage Prime Neuroptics", "Vauban Prime Chassis"));
-            relics.Add(new Relic(this,"Axi A3", "Braton Prime Barrel", "Helios Prime Carapace", "Kogake Prime Boot", "Cernos Prime String", "Hydroid Prime Neuroptics", "Akbolto Prime Receiver"));
-            relics.Add(new Relic(this,"Axi B2", "Fang Prime Blade", "Fragor Prime Head", "Sybaris Prime Blueprint", "Forma Blueprint", "Orthos Prime Blueprint", "Banshee Prime Neuroptics"));
-            relics.Add(new Relic(this,"Axi E2", "Braton Prime Stock", "Lex Prime Receiver", "Paris Prime Blueprint", "Bronco Prime Barrel", "Forma Blueprint", "Euphona Prime Receiver"));
-            relics.Add(new Relic(this,"Axi N5", "Euphona Prime Blueprint", "Lex Prime Barrel", "Oberon Prime Chassis", "Helios Prime Systems", "Nekros Prime Neuroptics", "Nami Skyla Prime Blade"));
-            relics.Add(new Relic(this,"Axi O1", "Euphona Prime Blueprint", "Forma Blueprint", "Paris Prime Blueprint", "Akstiletto Prime Receiver", "Galatine Prime Handle", "Oberon Prime Neuroptics"));
-            relics.Add(new Relic(this,"Axi V6", "Ballistica Prime Lower Limb", "Braton Prime Blueprint", "Forma Blueprint", "Fang Prime Handle", "Galatine Prime Handle", "Valkyr Prime Chassis"));
-            relics.Add(new Relic(this,"Axi V7", "Lex Prime Barrel", "Nami Skyla Prime Blueprint", "Valkyr Prime Blueprint", "Kogake Prime Blueprint", "Silva & Aegis Prime Blueprint", "Venka Prime Gauntlet"));
-            GetItems();
-            /*if (File.Exists("inventory.txt"))
-            {
-                //inventory = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Tuple<String,uint>>>(File.ReadAllText("inventory.txt"));
-                //PopulateItemBox();
-            }*/
-            //UpdateItemData("primed continuity");
-            //UpdateItemPrice("lex prime barrel");
+            dh = new DataHandler();
         }
 
         private async void PopulateItemBox()
@@ -92,32 +47,15 @@ namespace WarframeInventoryAuditor
             for (int i = 0; i < Math.Ceiling((decimal)inventory.Count / (decimal)7.0); ++i)
                 for (int ii = 0; ii < Math.Min(7, (inventory.Count - i * 7)); ++ii)
                 {
-                    if (items.TryGetValue(inventory[i * 7 + ii].Item1, out Dictionary<String, String> data))
+                    String item_name = await dh.GetItemProperty(inventory[i * 7 + ii].Item1, "item_name");
+                    float price = await dh.GetItemPrice(inventory[i * 7 + ii].Item1);
+                    if (item_name == "" || price == 0)
                     {
-                        if (!data.TryGetValue("item_name", out string item_name))
-                        {
-                            await UpdateItemData(inventory[i * 7 + ii].Item1);
-                            if (!data.TryGetValue("item_name", out item_name))
-                            {
-                                CreateNewItemDisplay(new Point(10 + ii * 150, 10 + i * 150), inventory[i * 7 + ii].Item1, 0, 0, true);
-                                continue;
-                            }
-                        }
-                        //if (!data.TryGetValue("moving_avg", out string plat_value) || !data.TryGetValue("datetime", out string date))
-                        //{
-                            await UpdateItemPrice(inventory[i * 7 + ii].Item1);
-                            if (!data.TryGetValue("moving_avg", out string plat_value))
-                            {
-                                CreateNewItemDisplay(new Point(10 + ii * 150, 10 + i * 150), inventory[i * 7 + ii].Item1, 0, 0, true);
-                                continue;
-                            }
-                        //}
-                        
-                        CreateNewItemDisplay(new Point(10 + ii * 150, 10 + i * 150), item_name, (int)inventory[i * 7 + ii].Item2, float.Parse(plat_value));
-                        plat_total += (int)inventory[i * 7 + ii].Item2 * float.Parse(plat_value);
-                    }
-                    else
                         CreateNewItemDisplay(new Point(10 + ii * 150, 10 + i * 150), inventory[i * 7 + ii].Item1, 0, 0, true);
+                        continue;
+                    }
+                    CreateNewItemDisplay(new Point(10 + ii * 150, 10 + i * 150), item_name, (int)inventory[i * 7 + ii].Item2, price);
+                    plat_total += (int)inventory[i * 7 + ii].Item2 * price;
                 }
             lblPTotal.Text = "Plat Total: " + plat_total.ToString();
             pnlInv.AutoScroll = true;
@@ -125,8 +63,7 @@ namespace WarframeInventoryAuditor
 
         private void Form1_Closed(object sender, FormClosedEventArgs e)
         {
-            File.WriteAllText(@"items.txt", Newtonsoft.Json.JsonConvert.SerializeObject(items));
-            File.WriteAllText(@"log.txt", log);
+            dh.Save();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -208,209 +145,11 @@ namespace WarframeInventoryAuditor
             else
             {
                 plattext.Text = count.ToString() + "(Total) * " + price.ToString() + "(Price) " + " = " + (count * price).ToString("N1");
-                Icon.Image = await GetItemThumbnail(name);
+                Icon.Image = await dh.GetItemThumbnail(name);
             }
 
 
 
-        }
-
-        public async Task<float> GetItemPrice(String name, string metric = "avg_price")
-        {
-            name = name.ToUpper();
-            //get item data
-            if (items.TryGetValue(name, out Dictionary<String, String> data))
-            {
-                if (data.TryGetValue(metric, out string plat))
-                {
-                    return float.Parse(plat);
-                }
-                //if it was checked recently but there was no data
-                if (data.TryGetValue("Price Last Updated", out String time) && DateTime.TryParse(time, out DateTime utime) && utime.AddDays(1) >= DateTime.Now)
-                    return 0;
-                //if not found update and try again
-                await UpdateItemPrice(name);
-                if (items[name].TryGetValue(metric, out plat))
-                {
-                    return float.Parse(plat);
-                }
-            }
-            return 0;
-        }
-
-        private async Task UpdateItemPrice(String name)
-        { 
-            name = name.ToUpper();
-            if (items.TryGetValue(name,out Dictionary<String, String> data))
-            {
-                if (data.TryGetValue("url_name", out string url_name))
-                {
-                    using (HttpResponseMessage responce = await client.GetAsync(@"items/" + url_name + "/statistics"))
-                    {
-                        var str = await responce.Content.ReadAsStringAsync();
-                        richTextBox1.Text = str;
-                        Newtonsoft.Json.Linq.JObject payload = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(str).payload;
-                        Newtonsoft.Json.Linq.JArray jitems = payload.Value<Newtonsoft.Json.Linq.JObject>("statistics").Value< Newtonsoft.Json.Linq.JArray>("90days");
-                        if (jitems.HasValues)
-                        {
-                            Dictionary<String, String> stats = jitems.Last.ToObject<Dictionary<String, String>>();
-
-                            foreach (var item in stats)
-                            {
-                                data[item.Key] = item.Value;
-                            }
-                        }
-                        data["Price Last Updated"] = DateTime.Now.ToString();
-                        items[name] = data;
-                        await Task.Delay(500);
-                    }
-                }
-            }
-        }
-
-        public async Task<Bitmap> GetItemThumbnail(String name)
-        {
-            while (image_request) { await Task.Delay(500); }
-            image_request = true;
-            name = name.ToUpper();
-            //richTextBox1.Text += "Finding " + name + " thumbnail\n";
-            Bitmap thumb = null;
-            if (items.TryGetValue(name, out Dictionary<String, String> data))
-            {
-                if (data.TryGetValue("local_thumb", out string file_name) && File.Exists(file_name))
-                {
-                    //richTextBox1.Text += "using local file\n";
-                    try
-                    {
-                        image_request = false;
-                        return new Bitmap(file_name);
-                    }
-                    catch (Exception e)
-                    {
-                        //corrupt file
-                    }
-                }
-                if (!data.ContainsKey("thumb"))
-                {
-                    //richTextBox1.Text += "updating item info\n";
-                    await UpdateItemData(name);
-                    await Task.Delay(500);
-                    if (!data.ContainsKey("thumb"))
-                    {
-                        image_request = false;
-                        return null;
-                    }
-                    
-                }
-                //richTextBox1.Text += "downloading image\n";
-                //richTextBox1.Text += data["thumb"] + '\n';
-                String fname = name + "thumb.bmp";
-                Stream s = await image_client.GetStreamAsync(data["thumb"]);
-                thumb = new Bitmap(Image.FromStream(s));
-                thumb.Save(name + "thumb.bmp");
-                data["local_thumb"] = name + "thumb.bmp";
-                items[name] = data;
-                //richTextBox1.Text += "Waiting\n";
-                await Task.Delay(500);
-
-                //richTextBox1.Text += "Finished\n";
-            }
-            image_request = false;
-            return thumb;
-        }
-
-        public async Task<String> GetItemProperty(String name, String property)
-        {
-            name = name.ToUpper();
-            if (items.TryGetValue(name, out Dictionary<String, String> data))
-            {
-                if (data.TryGetValue(property, out string property_value))
-                {
-                    return property_value;
-                }
-                await UpdateItemData(name);
-                if (data.TryGetValue(property, out property_value))
-                {
-                    return property_value;
-                }
-            }
-            return "";
-        }
-
-        private async Task UpdateItemData(String name)
-        {
-            name = name.ToUpper();
-            if (items.TryGetValue(name, out Dictionary < String, String > data))
-            {
-                if (data.TryGetValue("url_name", out string url_name))
-                {
-                    using (HttpResponseMessage responce = await client.GetAsync(@"items/" + url_name))
-                    {
-                        var str = await responce.Content.ReadAsStringAsync();
-                        richTextBox1.Text = str;
-                        dynamic payload = Newtonsoft.Json.JsonConvert.DeserializeObject(str);
-                        Newtonsoft.Json.Linq.JArray jitems = payload.payload.item.items_in_set;
-                        foreach(Newtonsoft.Json.Linq.JObject jitem in jitems)
-                        {
-                            String iname = jitem.Value<Newtonsoft.Json.Linq.JObject>("en").Value<String>("item_name").ToUpper();
-                            
-                            if (items.TryGetValue(iname, out Dictionary<String, String> possible_data))
-                            {
-                                if (jitem.TryGetValue("ducats", out Newtonsoft.Json.Linq.JToken ducats))
-                                {
-                                    //richTextBox1.Text += iname + " " + ducats.ToString() + '\n';
-                                    possible_data["ducats"] = ducats.ToString();
-                                    
-                                }
-                                if (jitem.TryGetValue("thumb", out Newtonsoft.Json.Linq.JToken thumb))
-                                {
-                                    //richTextBox1.Text += iname + " " + ducats.ToString() + '\n';
-                                    possible_data["thumb"] = thumb.ToString();
-                                }
-                                if (jitem.TryGetValue("rarity", out Newtonsoft.Json.Linq.JToken rarity))
-                                {
-                                    //richTextBox1.Text += iname + " " + ducats.ToString() + '\n';
-                                    possible_data["rarity"] = rarity.ToString();
-                                }
-                                items[iname] = possible_data;
-                            }
-                        }
-                        //File.WriteAllText(@"items.txt", Newtonsoft.Json.JsonConvert.SerializeObject(items));
-                        //richTextBox1.Text = str;
-                        await Task.Delay(500);
-                    }
-                }
-            }
-        }
-
-        private void GetItems()
-        {
-            if (File.Exists("items.txt"))
-            {
-                items = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, Dictionary<String, String>>>(File.ReadAllText("items.txt"));
-            }
-            else
-            {
-                Task t = FetchItems();
-                //t.Wait();
-            }
-        }
-
-        private async Task FetchItems()
-        {
-                using (HttpResponseMessage responce = await client.GetAsync("items"))
-                {
-                    var str = await responce.Content.ReadAsStringAsync();
-                    dynamic payload = Newtonsoft.Json.JsonConvert.DeserializeObject(str);
-                    Newtonsoft.Json.Linq.JArray jitems = payload.payload.items.en;
-
-                    foreach (Newtonsoft.Json.Linq.JObject i in jitems)
-                    {
-                        items.Add(i.Value<String>("item_name").ToUpper(), i.ToObject<Dictionary<String, String>>());
-                    }
-                    //File.WriteAllText(@"items.txt", Newtonsoft.Json.JsonConvert.SerializeObject(items));
-                    //richTextBox1.Text = str;
-                }
         }
 
         private void ScanMods()
@@ -595,7 +334,6 @@ namespace WarframeInventoryAuditor
                     //Thread.Sleep(1000);
                     Tuple<String, uint> result = ParseImage();
                     name = result.Item1;
-                    log += result.Item1 + " : " + result.Item2.ToString() + "\n";
                     //Thread.Sleep(1000);
                     if (name == "")
                     {
@@ -615,7 +353,6 @@ namespace WarframeInventoryAuditor
                     ItemImage(new Point(98 + 290 * 5, 327 + 207 * y));
                     Tuple<String, uint> result = ParseImage();
                     name = result.Item1;
-                    log += result.Item1 + " : " + result.Item2.ToString() + "\n";
                     if (name == lastTop || name == "")
                     {
                         name = "";
@@ -826,132 +563,23 @@ namespace WarframeInventoryAuditor
             public int Bottom;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
 
-            OutputRelicWorth();
-        }
-
-        public class Relic:IComparable<Relic>
-        {
-            public Relic(Form1 f,String n, String c1, String c2, String c3, String u1, String u2, String r)
-            {
-                name = n;
-                stuff = new List<String>();
-                values = new List<float>();
-                stuff.Add(c1);
-                stuff.Add(c2);
-                stuff.Add(c3);
-                stuff.Add(u1);
-                stuff.Add(u2);
-                stuff.Add(r);
-                main_form = f;
-            }
-
-            public async Task<String> ValueAnalysis()
-            {
-                values.Clear();
-                String analysis = name + " : ";
-                foreach(String s in stuff)
-                {
-                    if (!(main_form.items.ContainsKey(s.ToUpper())) || !(main_form.items[s.ToUpper()].ContainsKey("moving_avg")))
-                    {
-                        await main_form.UpdateItemPrice(s.ToUpper());
-                        await Task.Delay(500);
-                    }
-                                  
-                    analysis += "[" + s + " : ";
-                    if (main_form.items.TryGetValue(s.ToUpper(), out Dictionary<String, String> item))
-                    {
-                        if (item.TryGetValue("moving_avg", out String o3))
-                        {
-                            analysis += o3;
-                            values.Add(float.Parse(o3));
-                        }
-                        else
-                        {
-                            analysis += "No Data";
-                            values.Add(0);
-                        }
-                    }
-                    else
-                    {
-                        values.Add(0);
-                        analysis += "Not Tradable";
-                    }
-                    analysis += ']';
-                    
-                }
-                return analysis;
-            }
-
-            public float AverageCommonValue()
-            {
-                if (values.Count < 3)
-                    return 0;
-                return (values[0] + values[1] + values[2]) / 3;
-            }
-
-            int IComparable<Relic>.CompareTo(Relic relic)
-            {
-                var avg = AverageCommonValue();
-                var oavg = relic.AverageCommonValue();
-                if (avg > oavg)
-                    return 1;
-                if (avg < oavg)
-                    return -1;
-                return 0;
-            }
-
-
-            public String name;
-            public List<String> stuff;
-            public List<float> values;
-            public Form1 main_form;
-        }
-
-        private async void OutputRelicWorth()
-        {
-            if (File.Exists("items.txt"))
-            {
-                items = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, Dictionary<String, String>>>(File.ReadAllText("items.txt"));
-            }
-            else
-                GetItems();
-            
-
-
-            foreach (Relic r in relics)
-            {
-                //String s = await r.ValueAnalysis();
-                //richTextBox1.Text += s + '\n';
-            }
-            relics.Sort();
-            foreach (Relic r in relics)
-            {
-                String s = await r.ValueAnalysis();
-                richTextBox1.Text += s + '\n';
-            }
-
-        }
-
-        
-         //* Deleted by not understanding how github works T_T
+    
         private void btnRelicOpening_Click(object sender, EventArgs e)
         {
-            RelicOpening form = new RelicOpening(this);
+            RelicOpening form = new RelicOpening(dh);
             form.Show();
         }
 
         private void btnRelicAnalysis_Click(object sender, EventArgs e)
         {
-            RelicAnalysis form = new RelicAnalysis(this);
+            RelicAnalysis form = new RelicAnalysis(dh);
             form.Show();
         }
 
         private void btnModAnalysis_Click(object sender, EventArgs e)
         {
-            ModAnalysis form = new ModAnalysis(this);
+            ModAnalysis form = new ModAnalysis(dh);
             form.Show();
         }
 
@@ -962,7 +590,6 @@ namespace WarframeInventoryAuditor
             this.lblPTotal = new System.Windows.Forms.Label();
             this.pnlInv = new System.Windows.Forms.Panel();
             this.btnRelicOpening = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -1015,17 +642,6 @@ namespace WarframeInventoryAuditor
             this.btnRelicOpening.UseVisualStyleBackColor = true;
             this.btnRelicOpening.Click += new System.EventHandler(this.btnRelicOpening_Click);
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(93, 12);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(102, 23);
-            this.button2.TabIndex = 13;
-            this.button2.Text = "Relic Analysis";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(905, 342);
@@ -1060,11 +676,11 @@ namespace WarframeInventoryAuditor
             this.Controls.Add(this.lblPTotal);
             this.Controls.Add(this.pnlInv);
             this.Controls.Add(this.btnRelicOpening);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_Closed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

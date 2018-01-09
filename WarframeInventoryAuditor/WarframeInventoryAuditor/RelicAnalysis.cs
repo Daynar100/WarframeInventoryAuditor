@@ -12,16 +12,15 @@ namespace WarframeInventoryAuditor
 {
     public partial class RelicAnalysis : Form
     {
-        Form1 main_form;
+        DataHandler dh;
         //Tuple contails panel and relic index in the relic list
         List<Tuple<Panel,List<float>>> relics = new List<Tuple<Panel, List<float>>>();
-        public RelicAnalysis(Form1 f)
+        public RelicAnalysis(DataHandler d)
         {
-            main_form = f;
+            dh = d;
             InitializeComponent();
             cmbPlatSource.SelectedIndex = 0;
             cmbSort.SelectedIndex = 0;
-
             //init panels
             Task t = InitPanels();
         }
@@ -37,7 +36,7 @@ namespace WarframeInventoryAuditor
             pnlRelics.AutoScroll = false;
             pnlRelics.VerticalScroll.Value = 0;
             Status("Initializing Relics");
-            String value_type = "moving_avg";
+            String value_type = "avg_price";
             switch (cmbPlatSource.SelectedIndex)
             {
                 case 1:
@@ -48,22 +47,22 @@ namespace WarframeInventoryAuditor
                     break;
             }
             
-            for (int i = 0; i < main_form.relics.Count; ++i)
+            for (int i = 0; i < dh.relics.Count; ++i)
             {
                 Panel panel = new Panel();
                 panel.Size = new Size(1050, 50);
                 panel.Location = new Point(0,50 * i);
-                Form1.Relic r = main_form.relics[i];
+                Relic r = dh.relics[i];
 
                 Label name = new Label();
-                name.Text = r.name;
+                name.Text = r.GetName();
                 name.Location = new Point(10, 25);
                 panel.Controls.Add(name);
 
                 List<float> values = new List<float>();
-                for (int j = 0; j < r.stuff.Count; ++j)
+                for (int j = 0; j < 6; ++j)
                 {
-                    String iname = r.stuff[j];
+                    String iname = r.GetItemName(j);
                     Label liname = new Label();
                     liname.Text = iname;
                     liname.Location = new Point(10 + 150 * (j + 1), 10);
@@ -71,7 +70,7 @@ namespace WarframeInventoryAuditor
                     panel.Controls.Add(liname);
 
                     Label plat = new Label();
-                    float value = await main_form.GetItemPrice(iname, value_type);
+                    float value = await dh.GetItemPrice(iname, value_type);
                     values.Add(value);
                     plat.Text = value.ToString("N2") + " Plat";
                     plat.Location = new Point(10 + 150 * (j + 1), 35);

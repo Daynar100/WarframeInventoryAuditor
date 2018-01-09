@@ -12,15 +12,16 @@ namespace WarframeInventoryAuditor
 {
     public partial class RelicOpening : Form
     {
-        Form1 main_form;
-        public RelicOpening(Form1 f)
+        DataHandler dh;
+        private List<Tuple<Task<float>, String,String>> ongoing_tasks = new List<Tuple<Task<float>, String, String>>();
+        public RelicOpening(DataHandler d)
         {
-            main_form = f;
+            dh = d;
             InitializeComponent();
             List<String> relic_names = new List<String>();
-            foreach(Form1.Relic r in main_form.relics)
+            foreach(Relic r in dh.relics)
             {
-                relic_names.Add(r.name);
+                relic_names.Add(r.GetName());
             }
             cmbRelics.DataSource = relic_names;
             comboBox1.DataSource = new List<String>(relic_names);
@@ -32,51 +33,86 @@ namespace WarframeInventoryAuditor
             UpdateRelicPanel(groupBox4, 0);
         }
 
-        private async void UpdateRelicPanel(GroupBox gb, int cmbIndex)
+        private void UpdateRelicPanel(GroupBox gb, int cmbIndex)
         {
-            Form1.Relic r = main_form.relics[cmbIndex];
+            Relic r = dh.relics[cmbIndex];
             foreach (Control p in gb.Controls)
             {
-                foreach(Control c in p.Controls)
+                Label min = null, max = null, avg = null;
+                String name = "";
+                foreach (Control c in p.Controls)
                 {
-                    String name = r.stuff[int.Parse(p.Tag.ToString())];
+                    name = r.GetItemName(int.Parse(p.Tag.ToString()));
                     switch(c.Tag)
                     {
                         case "name":
                             c.Text = name;
                             break;
                         case "min":
-                            c.Text = "Min: " + (await main_form.GetItemPrice(name, "min_price")).ToString("N2");
+                            min = (Label)c;
                             break;
                         case "max":
-                            c.Text = "Max: " + (await main_form.GetItemPrice(name, "max_price")).ToString("N2");
+                            max = (Label)c;
                             break;
                         case "avg":
-                            c.Text = (await main_form.GetItemPrice(name)).ToString("N2");
+                            avg = (Label)c;
                             break;
                         case "pb":
                             UpdateThumbnail((PictureBox)c, name);
                             break;
                     }
+                    
                 }
+                UpdateValue(name, min, max, avg);
             }
         }
 
         private async void UpdateThumbnail(PictureBox pb, String name)
         {
             pb.Image = null;
+            pb.AccessibleName = name;
             if (name == "Forma Blueprint")
             {
                 pb.Image = Image.FromFile("Forma2.png");
             }
             else
             {
-                pb.Image = await main_form.GetItemThumbnail(name);
+                Bitmap b = await dh.GetItemThumbnail(name);
+                if(pb.AccessibleName == name)
+                    pb.Image = b;
+            }
+        }
+
+        private async void UpdateValue(String name, Label min, Label max, Label avg)
+        {
+            if (min == null || max == null || avg == null)
+            {
+                return;
+            }
+            min.Text = "Min: ";
+            max.Text = "Max: ";
+            avg.Text = "Average";
+            min.AccessibleName = name;
+            Task<float> t;
+            if (ongoing_tasks.Exists(x => (x.Item2 == name && x.Item3 == "avg_price")))
+                t = ongoing_tasks.Find(x => (x.Item2 == name && x.Item3 == "avg_price")).Item1;
+            else
+            {
+                t = dh.GetItemPrice(name, "avg_price");
+                ongoing_tasks.Add(new Tuple<Task<float>, String, String>(t, name, "avg_price"));
+            }
+            String s = (await t).ToString("N2");
+            if (min.AccessibleName == name)
+            {
+                avg.Text = s;
+                min.Text = "Min: " + (await dh.GetItemPrice(name, "min_price")).ToString("N2");
+                max.Text = "Max: " + (await dh.GetItemPrice(name, "max_price")).ToString("N2");
             }
         }
 
         private void cmbRelics_SelectedIndexChanged(Object sender, EventArgs e)
         {
+            ongoing_tasks.Clear();
             UpdateRelicPanel((GroupBox)((ComboBox)sender).Parent,((ComboBox)sender).SelectedIndex);
         }
     }
