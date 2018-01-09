@@ -1,6 +1,9 @@
 # WarframeInventoryAuditor
 A tool to audit user inventory in warframe.
 
+The Zip folder contains an installer. Unzip everything and run setup.exe to install.
+You can uninstall from the add/remove programs menu in windows.
+
 Currently it contains the main inventory scanner, relics and mod analysis forms, and a form to show and compare item rewards in 4 relics (useful during relic runs).
 I am not very experienced with any of the tools used, so code is likely subpar and not free of bugs.
 The warframe market api specifies a maximum of 3rps, which is why it may take a while for things to load the first time around.
