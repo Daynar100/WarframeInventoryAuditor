@@ -29,7 +29,7 @@ namespace WarframeInventoryAuditor
         private PictureBox pictureBox1;
         private RichTextBox richTextBox1;
         private Button button1;
-
+        private Button button2;
         DataHandler dh;
 
         public Form1()
@@ -593,6 +593,7 @@ namespace WarframeInventoryAuditor
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -668,9 +669,20 @@ namespace WarframeInventoryAuditor
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(553, 12);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(120, 23);
+            this.button2.TabIndex = 19;
+            this.button2.Text = "Force Update All Data";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(1089, 406);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.btnModAnalysis);
             this.Controls.Add(this.btnRelicAnalysis);
             this.Controls.Add(this.lblPTotal);
@@ -685,6 +697,11 @@ namespace WarframeInventoryAuditor
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            dh.UpdateAll(richTextBox1);
         }
     }
    

@@ -97,13 +97,13 @@ namespace WarframeInventoryAuditor
                 switch (cmbSort.SelectedIndex)
                 {
                     case 0: // RNG Intact
-                        value = (float)(v[0] * .2533 + v[1] * .2533 + v[2] * .2533 + v[3] * .11 + v[4] * .11 + v[5] * .2);
+                        value = (float)(v[0] * .2533 + v[1] * .2533 + v[2] * .2533 + v[3] * .11 + v[4] * .11 + v[5] * .02);
                         break;
                     case 1: // RNG Exceptional
-                        value = (float)(v[0] * .2333 + v[1] * .2333 + v[2] * .2333 + v[3] * .13 + v[4] * .13 + v[5] * .4);
+                        value = (float)(v[0] * .2333 + v[1] * .2333 + v[2] * .2333 + v[3] * .13 + v[4] * .13 + v[5] * .04);
                         break;
                     case 2: // RNG Flawless
-                        value = (float)(v[0] * .2 + v[1] * .2 + v[2] * .2 + v[3] * .17 + v[4] * .17 + v[5] * .6);
+                        value = (float)(v[0] * .2 + v[1] * .2 + v[2] * .2 + v[3] * .17 + v[4] * .17 + v[5] * .06);
                         break;
                     case 3: // RNG Radient
                         value = (float)(v[0] * .1667 + v[1] * .1667 + v[2] * .1667 + v[3] * .20 + v[4] * .20 + v[5] * .10);

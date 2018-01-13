@@ -88,6 +88,8 @@ namespace WarframeInventoryAuditor
 
         public async Task<Bitmap> GetItemThumbnail(String name)
         {
+            if (!Directory.Exists("images"))
+                Directory.CreateDirectory("images");
             while (image_lock) { await Task.Delay(333); }
             image_lock = true;
             name = name.ToUpper();
@@ -118,13 +120,13 @@ namespace WarframeInventoryAuditor
                     }
 
                 }
-                String fname = name + "thumb.bmp";
                 await AwaitHttpLock();
                 Stream s = await image_client.GetStreamAsync(data["thumb"]);
                 http_lock = false;
                 thumb = new Bitmap(Image.FromStream(s));
-                thumb.Save(name + "thumb.bmp");
-                data["local_thumb"] = name + "thumb.bmp";
+                String fname = @"images/" + name + "thumb.bmp";
+                thumb.Save(fname);
+                data["local_thumb"] = fname;
                 items[name] = data;
             }
             image_lock = false;
@@ -255,6 +257,105 @@ namespace WarframeInventoryAuditor
             //the calling event should now execute with a .5s delay to prevent spamming WFMarket
             http_lock = true;
             await Task.Delay(500);
+        }
+
+        //this is for updating the webpage and should be removed if the webpage gets an actual webhost
+        //and can do this automatically
+        public async void UpdateAll(System.Windows.Forms.Control log)
+        {
+            if (!Directory.Exists("images"))
+                Directory.CreateDirectory("images");
+            await AwaitHttpLock();
+            String length = items.Values.Count.ToString();
+            int num = 0;
+            foreach (Dictionary<String, String> item in items.Values)
+            {
+                if (!item.TryGetValue("url_name", out String url_name))
+                    continue;
+                if (!item.TryGetValue("thumb", out String thumb_url))
+                {
+                    log.Text = num.ToString() + "/" + length + "  Updating " + url_name + " data";
+                    log.Refresh();
+                    try
+                    {
+                        using (HttpResponseMessage responce = await client.GetAsync(@"items/" + url_name))
+                        {
+                            var str = await responce.Content.ReadAsStringAsync();
+                            dynamic payload = Newtonsoft.Json.JsonConvert.DeserializeObject(str);
+                            Newtonsoft.Json.Linq.JArray jitems = payload.payload.item.items_in_set;
+                            foreach (Newtonsoft.Json.Linq.JObject jitem in jitems)
+                            {
+                                String iname = jitem.Value<Newtonsoft.Json.Linq.JObject>("en").Value<String>("item_name").ToUpper();
+
+                                if (items.TryGetValue(iname, out Dictionary<String, String> possible_data))
+                                {
+                                    if (jitem.TryGetValue("ducats", out Newtonsoft.Json.Linq.JToken ducats))
+                                    {
+                                        possible_data["ducats"] = ducats.ToString();
+
+                                    }
+                                    if (jitem.TryGetValue("thumb", out Newtonsoft.Json.Linq.JToken thumb))
+                                    {
+                                        possible_data["thumb"] = thumb.ToString();
+                                    }
+                                    if (jitem.TryGetValue("rarity", out Newtonsoft.Json.Linq.JToken rarity))
+                                    {
+                                        possible_data["rarity"] = rarity.ToString();
+                                    }
+                                }
+                            }
+                        }
+                        item.TryGetValue("thumb", out thumb_url);
+                        await Task.Delay(1000);
+                    }
+                    catch (Exception e) { }
+                    
+                }
+                try
+                {
+                    log.Text = num.ToString() + "/" + length + "  Updating " + url_name + " price";
+                    log.Refresh();
+                    using (HttpResponseMessage responce = await client.GetAsync(@"items/" + url_name + "/statistics"))
+                    {
+                        var str = await responce.Content.ReadAsStringAsync();
+                        Newtonsoft.Json.Linq.JObject payload = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(str).payload;
+                        Newtonsoft.Json.Linq.JArray jitems = payload.Value<Newtonsoft.Json.Linq.JObject>("statistics").Value<Newtonsoft.Json.Linq.JArray>("90days");
+                        if (jitems.HasValues)
+                        {
+                            Dictionary<String, String> stats = jitems.Last.ToObject<Dictionary<String, String>>();
+                            foreach (var i in stats)
+                            {
+                                item[i.Key] = i.Value;
+                            }
+                        }
+                        item["Price Last Updated"] = DateTime.UtcNow.ToString();
+                    }
+                }
+                catch (Exception e)
+                { }
+                await Task.Delay(1000);
+                if (!item.TryGetValue("local_thumb", out string file_name) || !File.Exists(file_name) || thumb_url != "")
+                {
+                    try
+                    {
+                        log.Text = num.ToString() + "/" + length + "  Updating " + url_name + " thumbnail";
+                        log.Refresh();
+                        Stream s = await image_client.GetStreamAsync(thumb_url);
+                        Bitmap thumb = new Bitmap(Image.FromStream(s));
+                        String fname = "images/" + item["item_name"].ToUpper() + "thumb.bmp";
+                        thumb.Save(fname);
+                        item["local_thumb"] = fname;
+                        await Task.Delay(1000);
+                    }
+                    catch (Exception e)
+                    { }
+                }
+                ++num;
+                
+            }
+            http_lock = false;
+            Save();
+            log.Text = "Done!";
         }
 
         public List<Relic> relics = new List<Relic>();

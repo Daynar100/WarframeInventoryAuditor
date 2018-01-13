@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+table, td, th {
+    border: 1px solid black;
+		min-width: 100px;
+}
+.RelicItem{
+width: 200px;
+height: 100px;
+}
+.RelicItemThumbnailContainer{
+display:inline-block;
+padding:0;
+margin:0;
+width:100px;
+height:100px;
+}
+.RelicItemThumbnail{
+	padding:0px;
+  max-width:100px;
+  max-height:80px;
+  width: auto;
+  height: auto;
+	margin:0;
+	
+}
+h4{
+position:relative;
+margin:0;
+padding:0px;
+}
+p{
+display:block;
+}
+.RelicItemAverage{
+
+font-weight: bold;
+font-size: 24px;
+position: relative;
+top:-125px;
+left:105px;
+}
+.RelicItemMax{
+position: relative;
+left:105px;
+top:-152px;
+}
+.RelicItemMin{
+position: relative;
+left:105px;
+top:-170px;
+}
+.openingBox{
+display:inline-block;
+}
+</style>
+  <meta charset="utf-8">
+  <title>jQuery.getJSON demo</title>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+<div>
+<button type="button" onclick="showRelicOpening()">Relic Opening Assistor</button>
+<button type="button" onclick="showRelicAnalysis()">Relic Analysis</button>
+<button type="button" onclick="showModAnalysis()">Mod Analysis</button>
+</div>
+<div id="relicOpening">
+<div>
+	<select name="sortOptions" id = "relicsortoptionsopening" onchange="updateAllRelicOpening()">
+    <option value="avg_price">Average</option>
+		<option value="moving_avg">Moving Average</option>
+    <option value="median">Median</option>
+	</select>
+</div>
+<div id="openingBox" class="openingBox">
+
+	<select name="sortOptions" id = "openingRelics1" onchange="updateRelicOpening(this.parentNode)">
+	</select>
+
+<div class="RelicItem">
+<h4 class="RelicItemName">Name</h4>
+<div class="RelicItemThumbnailContainer">
+<img src="Forma2.png" alt="Thumbnail" class = "RelicItemThumbnail">
+</div>
+<p class="RelicItemAverage">Average</p>
+<p class="RelicItemMax">Max</p>
+<p class="RelicItemMin">Min</p>
+</div>
+</div
+</div>
+</div>
+<div id="relicanalysis" style="display:none;">
+<div id="relicoptions">
+	<select name="sortOptions" id = "relicsortoptionsvalue" onchange="updateRelicAnalysisTable()">
+    <option value="avg_price">Average</option>
+		<option value="moving_avg">Moving Average</option>
+    <option value="median">Median</option>
+    <option value="min_price">Min</option>
+		<option value="max_price">Max</option>
+	</select>
+		<select name="sortOptions" id = "relicsortoptionsalgorithm" onchange="updateRelicAnalysisTable()">
+    <option value="RNG (Intact)">RNG (Intact)</option>
+		<option value="RNG (Exceptional)">RNG (Exceptional)</option>
+    <option value="RNG (Flawless)">RNG (Flawless)</option>
+    <option value="RNG (Radiant)">RNG (Radiant)</option>
+		<option value="Average Common">Average Common</option>
+		<option value="Average Uncommon">Average Uncommon</option>
+		<option value="Rare">Rare</option>
+	</select>
+	
+</div>
+<table id="relics">
+<tr><th>Relic</th><th>Common</th><th>Common</th><th>Common</th><th>Uncommon</th><th>Uncommon</th><th>Rare</th></tr>
+<tbody>
+</tbody>
+</table>
+</div>
+<div id="modanalysis" style="display:none;">
+<div id="options">
+	<select name="sortOpetions" id = "sortoptions" onchange="updateTable()">
+    <option value="avg_price">Average</option>
+		<option value="moving_avg">Moving Average</option>
+    <option value="median">Median</option>
+    <option value="min_price">Min</option>
+		<option value="max_price">Max</option>
+	</select>
+	<input type="checkbox" id="common" checked="true" onclick="updateTable()">
+		<label for="common">Common</label>
+	<input type="checkbox" id="uncommon" checked="true" onclick="updateTable()">
+		<label for="uncommon">Uncommon</label>
+	<input type="checkbox" id="rare" checked="true" onclick="updateTable()">
+		<label for="rare">Rare</label>
+	<input type="checkbox" id="prime" checked="true" onclick="updateTable()">
+		<label for="prime">Prime</label>
+	<input type="checkbox" id="nodata" onclick="updateTable()">
+		<label for="nodata">No Data</label>
+</div>
+<table id="mods">
+<tr><th>Moving Average</th><th>Median</th><th>Average</th><th>Min</th><th>Max</th><th>Mod</th></tr>
+<tbody>
+</tbody>
+</table>
+</div>
+<script>
+
+var images = new Array();
+var relics = [
+["Lith A2", {name:"Forma Blueprint"}, {name:"Lex Prime Barrel"}, {name:"Valkyr Prime Blueprint"}, {name:"Akbronco Prime Link"}, {name:"Cernos Prime Blueprint"}, {name:"Akstiletto Prime Blueprint"}],
+["Lith B2", {name:"Forma Blueprint"}, {name:"Paris Prime Lower Limb"}, {name:"Tigris Prime Stock"}, {name:"Braton Prime Receiver"}, {name:"Orthos Prime Blade"}, {name:"Ballistica Prime Blueprint"}],
+["Lith C2", {name:"Bronco Prime Receiver"}, {name:"Paris Prime Upper Limb"}, {name:"Venka Prime Blades"}, {name:"Akbolto Prime Barrel"}, {name:"Nami Skyla Prime Handle"}, {name:"Cernos Prime Lower Limb"}],
+["Lith N3", {name:"Burston Prime Receiver"}, {name:"Sybaris Prime Stock"}, {name:"Valkyr Prime Blueprint"}, {name:"Braton Prime Blueprint"}, {name:"Forma Blueprint"}, {name:"Nekros Prime Blueprint"}],
+["Lith S7", {name:"Galatine Prime Blade"}, {name:"Lex Prime Blueprint"}, {name:"Mirage Prime Chassis"}, {name:"Akbolto Prime Link"}, {name:"Paris Prime Grip"}, {name:"Sybaris Prime Barrel"}],
+["Lith T1", {name:"Akbronco Prime Blueprint"}, {name:"Burston Prime Blueprint"}, {name:"Forma Blueprint"}, {name:"Ballistica Prime Upper Limb"}, {name:"Valkyr Prime Neuroptics"}, {name:"Tigris Prime Blueprint"}],
+["Lith V2", {name:"Fang Prime Blueprint"}, {name:"Lex Prime Barrel"}, {name:"Paris Prime Lower Limb"}, {name:"Forma Blueprint"}, {name:"Paris Prime Upper Limb"}, {name:"Vauban Prime Neuroptics"}],
+["Lith V3", {name:"Braton Prime Blueprint"}, {name:"Cernos Prime Upper Limb"}, {name:"Paris Prime Lower Limb"}, {name:"Helios Prime Systems"}, {name:"Tigris Prime Barrel"}, {name:"Valkyr Prime Neuroptics"}],
+["Meso G1", {name:"Braton Prime Barrel"}, {name:"Forma Blueprint"}, {name:"Venka Prime Blades"}, {name:"Ballistica Prime String"}, {name:"Silva & Aegis Prime Blade"}, {name:"Galatine Prime Blueprint"}],
+["Meso H1", {name:"Hydroid Prime Chassis"}, {name:"Mirage Prime Neuroptics"}, {name:"Paris Prime Blueprint"}, {name:"Fragor Prime Blueprint"}, {name:"Oberon Prime Blueprint"}, {name:"Helios Prime Cerebrum"}],
+["Meso K1", {name:"Cernos Prime Upper Limb"}, {name:"Nekros Prime Chassis"}, {name:"Orthos Prime Handle"}, {name:"Akstiletto Prime Barrel"}, {name:"Tigris Prime Receiver"}, {name:"Kogake Prime Gauntlet"}],
+["Meso N5", {name:"Braton Prime Stock"}, {name:"Forma Blueprint"}, {name:"Lex Prime Receiver"}, {name:"Hydroid Prime Blueprint"}, {name:"Tigris Prime Receiver"}, {name:"Nekros Prime Neuroptics"}],
+["Meso O1", {name:"Akbronco Prime Blueprint"}, {name:"Forma Blueprint"}, {name:"Paris Prime Lower Limb"}, {name:"Akstiletto Prime Link"}, {name:"Cernos Prime String"}, {name:"Oberon Prime Neuroptics"}],
+["Neo B2", {name:"Braton Prime Stock"}, {name:"Fang Prime Blueprint"}, {name:"Tigris Prime Stock"}, {name:"Forma Blueprint"}, {name:"Venka Prime Blueprint"}, {name:"Banshee Prime Chassis"}],
+["Neo H1", {name:"Burston Prime Receiver"}, {name:"Fragor Prime Head"}, {name:"Orthos Prime Handle"}, {name:"Banshee Prime Blueprint"}, {name:"Tigris Prime Barrel"}, {name:"Hydroid Prime Neuroptics"}],
+["Neo M1", {name:"Akbolto Prime Blueprint"}, {name:"Bronco Prime Blueprint"}, {name:"Paris Prime String"}, {name:"Euphona Prime Barrel"}, {name:"Helios Prime Blueprint"}, {name:"Mirage Prime Blueprint"}],
+["Neo S7", {name:"Banshee Prime Neuroptics"}, {name:"Fang Prime Blade"}, {name:"Helios Prime Carapace"}, {name:"Ballistica Prime Receiver"}, {name:"Sybaris Prime Receiver"}, {name:"Silva & Aegis Prime Guard"}],
+["Neo V2", {name:"Braton Prime Stock"}, {name:"Fang Prime Handle"}, {name:"Galatine Prime Blade"}, {name:"Forma Blueprint"}, {name:"Galatine Prime Handle"}, {name:"Vauban Prime Blueprint"}],
+["Neo V5", {name:"Helios Prime Carapace"}, {name:"Paris Prime String"}, {name:"Silva & Aegis Prime Hilt"}, {name:"Burston Prime Barrel"}, {name:"Forma Blueprint"}, {name:"Vauban Prime Neuroptics"}],
+["Neo V6", {name:"Burston Prime Stock"}, {name:"Cernos Prime Grip"}, {name:"Forma Blueprint"}, {name:"Fragor Prime Handle"}, {name:"Mirage Prime Neuroptics"}, {name:"Vauban Prime Chassis"}],
+["Axi A3", {name:"Braton Prime Barrel"}, {name:"Helios Prime Carapace"}, {name:"Kogake Prime Boot"}, {name:"Cernos Prime String"}, {name:"Hydroid Prime Neuroptics"}, {name:"Akbolto Prime Receiver"}],
+["Axi B2", {name:"Fang Prime Blade"}, {name:"Fragor Prime Head"}, {name:"Sybaris Prime Blueprint"}, {name:"Forma Blueprint"}, {name:"Orthos Prime Blueprint"}, {name:"Banshee Prime Neuroptics"}],
+["Axi E2", {name:"Braton Prime Stock"}, {name:"Lex Prime Receiver"}, {name:"Paris Prime Blueprint"}, {name:"Bronco Prime Barrel"}, {name:"Forma Blueprint"}, {name:"Euphona Prime Receiver"}],
+["Axi N5", {name:"Euphona Prime Blueprint"}, {name:"Lex Prime Barrel"}, {name:"Oberon Prime Chassis"}, {name:"Helios Prime Systems"}, {name:"Nekros Prime Neuroptics"}, {name:"Nami Skyla Prime Blade"}],
+["Axi O1", {name:"Euphona Prime Blueprint"}, {name:"Forma Blueprint"}, {name:"Paris Prime Blueprint"}, {name:"Akstiletto Prime Receiver"}, {name:"Galatine Prime Handle"}, {name:"Oberon Prime Neuroptics"}],
+["Axi V6", {name:"Ballistica Prime Lower Limb"}, {name:"Braton Prime Blueprint"}, {name:"Forma Blueprint"}, {name:"Fang Prime Handle"}, {name:"Galatine Prime Handle"}, {name:"Valkyr Prime Chassis"}],
+["Axi V7", {name:"Lex Prime Barrel"}, {name:"Nami Skyla Prime Blueprint"}, {name:"Valkyr Prime Blueprint"}, {name:"Kogake Prime Blueprint"}, {name:"Silva & Aegis Prime Blueprint"}, {name:"Venka Prime Gauntlet"}]
+];
+
+var mods = new Array();
+var items;
+($.getJSON("items.txt", function(json) {
+    items = json;
+		var mod_names = ["Abating Link","Acrobat","Adept Surge","Adrenaline Boost","Affinity Amp","Afterburn","Agility Drift","Air Thrusters","Anticipation","Antimatter Absorb","Antitoxin","Armored Acrobatics","Armored Agility","Armored Evade","Armored Recovery","Assimilate","Augur Accord","Augur Message","Augur Pact","Augur Reach","Augur Secrets","Aviator","Ballistic Bullseye","Battering Maneuver","Beguiling Lantern","Blind Rage","Calculated Spring","Calm & Frenzy","Capacitance","Cataclysmic Continuum","Chaos Sphere","Chilling Globe","Chromatic Blade","Coaction Drift","Constitution","Contagion Cloud","Continuity","Corroding Barrage","Corrosive Projection","Creeping Terrify","Cunning Drift","Curative Undertow","Dead Eye","Defiled Reckoning","Despoil","Diamond Skin","Divebomb Vortex","Duality","Elemental Sandstorm","EMP Aura","Endurance Drift","Enemy Radar","Enemy Sense","Energy Conversion","Energy Siphon","Enguard","Equilibrium","Escape Velocity","Eternal War","Everlasting Ward","Explosive Legerdemain","Fast Deflection","Fatal Teleport","Final Act","Fire Fright","Fireball Frenzy","F cont.","Firequake","Firewalker","Flame Repellent","Flash Accelerant","Fleeting Expertise","Flow","Follow Through","Fortitude","Fracturing Crush","Freeze Force","Funnel Clouds","Furious Javelin","Greedy Pull","Guided Effigy","Hall of Malevolence","Hallowed Eruption","Hallowed Reckoning","Handspring","Hastened Steps","Haven","Health Conversion","Heavy Impact","Heightened Reflexes","Hushed Invisibility","Hysterical Assault","Hysterical Fixation","Ice Spring","Ice Wave Impedance","Icy Avalanche","Infested Impedance","Infiltrate","Insulation","Intensify","Intruder","Iron Shrapnel","Iron Vault","Ironclad Charge","Irradiating Disarm","Jet Stream","Kinetic Collision","Laser Deflection","Lightning Dash","Lightning Rod","Loot Detector","Maglev","Magnetized Discharge","Marathon","Master Thief","Mesa's Waltz","Mind Freak","Mobilize","Muzzle Flash","Narrow Minded","Natural Talent","Negation Swarm","Neutron Star","No Current Leap","Ore Gaze","Overcharged","Overextended","Pacifying Bolts","Pain Threshold","Patagium","Path of Statues","Peaceful Provocation","Perpetual Vortex","Phoenix Renewal","Physique","Piercing Navigator","Piercing Roar","Piercing Step","Pilfering Swarm","Pistol Amp","Pistol Scavenger","Pool of Life","Power Drift","Power of Three","Primal Rage","Primed Continuity","Primed Flow","Prism Guard","Prolonged Paralysis","Provoked","Purging Slash","Purifying Flames","Push & Pull","Pyroclastic Flow","Quick Charge","Quick Rest","Quick Thinking","Radial Blast","Radiant Finish","Rage","Rapid Resilience","Recharge Barrier","Redirection","Reflection","Reflex Guard","Regenerative Molt","Reinforcing Stomp","Rejuvenation","Rending Turn","Repelling Bastille","Resilient Focus","Resonance","Resonating Quake","Retribution","Rifle Amp","Rifle Scavenger","Rift Torrent","Rime Vault","Rising Skill","Rising Storm","Rumbled","Rush","Safeguard","Safeguard Switch","Sapping Reach","Savage Silence","Savior Decoy","Searing Leap","Seeking Shuriken","Shield Disruption","Shield Flux","Shield of Shadows","Shield Overload","Shield Transference","Shock Absorbers","Shock Trooper","Shocking Speed","Shotgun Amp","Shotgun Scavenger","Signal Flare","Singularity","Smite Infusion","Smoke Shadow","Sniper Scavenger","Sonic Fracture","Soul Survivor","Speed Drift","Speed Holster","Sprint Boost","Staggering Shield","Stealth Drift","Steel Charge","Steel Fiber","Streamline","Streamlined Form","Stretch","Sure Footed","Surging Dash","Swing Line","Tactical Retreat","Tear Gas","Tectonic Fracture","Tempered Bound","Tesla Link","Thief's Wit","Tidal Impunity","Titanic Rumbler","Total Eclipse","Toxic Flight","Toxin Resistance","Transient Fortitude","Transistor Shield","Undying Will","Vampire Leech","Venom Dose","Venomous Rise","Vexing Retaliation","Vigor","Vital Systems Bypass","Vitality","Voltaic Lance","Overcharge Detectors","Surplus Diverters","Warm Coat"];
+var arrayLength = mod_names.length;
+for (var i = 0; i < arrayLength; i++) {
+	var iname = mod_names[i].toUpperCase();
+	if(items.hasOwnProperty(iname))
+	{
+		mods.push(items[iname]);
+	}
+}
+
+arrayLength = relics.length;
+for (var i = 0; i < arrayLength; i++) {
+	var relic = relics[i];
+	for(var j = 1; j < 7;++j)
+	{
+		var iname = relic[j].name.toUpperCase();
+		if(items.hasOwnProperty(iname))
+		{
+			 relic[j] = items[iname];
+		}
+	}
+	var o = document.createElement("option");
+	o.text = relics[i][0];
+	document.getElementById("openingRelics1").add(o);
+	relics[i] = relic;
+	
+}
+
+var c = $("div[class=RelicItem]");
+for(var i = 0; i < 5; ++i)
+	c.clone().appendTo("div[id=openingBox]");
+
+updateRelicOpening($('#openingBox'));
+
+var d = $("div[id=openingBox]");
+for(var i = 0; i < 3; ++i)
+	d.clone().appendTo("div[id=relicOpening]");
+
+updateRelicAnalysisTable();
+
+
+updateTable();
+
+    //Do something
+}))
+
+// append row to the HTML table
+function appendRow(item) {
+    var tbl = document.getElementById('mods'), // table reference
+        row = tbl.insertRow(tbl.rows.length);      // append table row
+    // insert table cells to the new row
+    createCell(row.insertCell(0), item["moving_avg"]);
+		createCell(row.insertCell(1), item["median"]);
+		createCell(row.insertCell(2), item["avg_price"]);
+		createCell(row.insertCell(3), item["min_price"]);
+		createCell(row.insertCell(4), item["max_price"]);
+		createCell(row.insertCell(5), item["item_name"]);
+}
+ 
+// create DIV element and append to the table cell
+function createCell(cell, text) {
+    var div = document.createElement('div'), // create DIV element
+        txt = document.createTextNode(text); // create text node
+    div.appendChild(txt);                    // append text node to the DIV
+    cell.appendChild(div);                   // append DIV to the table cell
+}
+
+function createNameValueCell(cell, name, value) {
+    var div = document.createElement('div'), // create DIV element
+        txt = document.createTextNode(name); // create text node
+				div.appendChild(txt);                    // append text node to the DIV
+		var divValue = document.createElement('div'), // create DIV element
+        txt = document.createTextNode(value); // create text node
+    divValue.appendChild(txt);                    // append text node to the DIV
+		div.appendChild(divValue);
+    cell.appendChild(div);   
+}
+
+function updateAllRelicOpening()
+{
+	$(document).find('div[class="openingBox"]').each(function(){
+		updateRelicOpening(this);
+	});
+}
+
+function updateRelicOpening(relicdiv){
+		var index = 0;
+		$(relicdiv).find('select').each(function(){index = this.selectedIndex;});
+		var relic = relics[index];
+		var i = 1;
+		var metric = document.getElementById("relicsortoptionsopening").value;
+		$(relicdiv).find('div[class="RelicItem"]').each(function(){
+			$(this).find('h4').each(function(){
+				var name = relic[i].item_name;
+				if (name == undefined)
+					name = "Forma Blueprint";
+				$(this).html(name);
+			});
+			$(this).find('p[class="RelicItemAverage"]').each(function(){
+				var value = relic[i][document.getElementById('relicsortoptionsopening').value];
+				if (value == undefined)
+					value = "0";
+				$(this).html(value);
+			});
+			$(this).find('p[class="RelicItemMax"]').each(function(){
+				var value = relic[i].max_price;
+				if (value == undefined)
+					value = "0";
+				$(this).html(value);
+			});
+			$(this).find('p[class="RelicItemMin"]').each(function(){
+				var value = relic[i].min_price;
+				if (value == undefined)
+					value = "0";
+				$(this).html(value);
+			});
+			$(this).find('div[class="RelicItemThumbnailContainer"]').each(function(){$(this).find('img').each(function(){
+				var value = relic[i].local_thumb;
+				if (value == undefined)
+					value = "Forma2.png";
+				this.src = value;
+			});});
+			++i;
+		});
+
+}
+
+function updateRelicAnalysisTable()
+{
+$('#relics tr').slice(1).remove();
+
+var metric = document.getElementById('relicsortoptionsvalue').value;
+var arrayLen = relics.length;
+for(var i = 0; i < arrayLen; ++i) 
+{
+var relic = relics[i];
+var v = new Array();
+v.push(0);
+for(var j = 1; j < 7; ++j)
+{
+var val = parseInt(relic[j][metric]);
+	if (isNaN(val))
+		v.push(0);
+		else
+		v.push(val)
+}
+switch(document.getElementById('relicsortoptionsalgorithm').value) {
+	case "RNG (Intact)":
+		relic[7] = v[1] * .2533 + v[2] * .2533 + v[3] * .2533 + v[4] * .11 + v[5] * .11 + v[6] * .02
+		relics[i] = relic;
+	break;
+		case "RNG (Exceptional)":
+		relic[7] = v[1] * .2333 + v[2] * .2333 + v[3] * .2333 + v[4] * .13 + v[5] * .13 + v[6] * .04
+		relics[i] = relic;
+	break;
+		case "RNG (Flawless)":
+		relic[7] = v[1] * .2 + v[2] * .2 + v[3] * .2 + v[4] * .17 + v[5] * .17 + v[6] * .06
+		relics[i] = relic;
+	break;
+		case "RNG (Radiant)":
+		relic[7] = v[1] * .1667 + v[2] * .1667 + v[3] * .1667 + v[4] * .2 + v[5] * .2 + v[6] * .1
+	break;
+		case "Average Common":
+		relic[7] = (v[1] + v[2] + v[3]) / 3
+	break;
+		case "Average Uncommon":
+		relic[7] = (v[4] + v[5]) / 2
+	break;
+	case "Rare":
+		relic[7] = v[6]
+		relics[i] = relic;
+	break;
+}
+}
+	relics.sort(function(a, b){
+			return b[7] - a[7];
+	})
+for (var i = 0; i < arrayLen; i++) {
+		var relic = relics[i];
+		var tbl = document.getElementById('relics'), // table reference
+        row = tbl.insertRow(tbl.rows.length);  
+		    createNameValueCell(row.insertCell(0), relic[0],relic[7].toFixed(2));
+				
+				for(var j = 1; j < 7; ++j)
+				{
+				
+					if (relic[j].hasOwnProperty("name"))
+						createNameValueCell(row.insertCell(j), relic[j].name, 0);
+					else
+						createNameValueCell(row.insertCell(j), relic[j].item_name, relic[j][metric]);
+				}
+		}
+}
+
+function updateTable()
+{
+$('#mods tr').slice(1).remove();
+
+mods.sort(function(a, b){
+		var metric = document.getElementById('sortoptions').value;
+		var aval = 0;
+		var bval = 0;
+		if (a.hasOwnProperty(metric))
+			aval = a[metric]
+		if (b.hasOwnProperty(metric))
+			bval = b[metric]
+    return bval - aval;
+})
+
+arrayLength = mods.length;
+for (var i = 0; i < arrayLength; i++) {
+		var item = mods[i];
+			if (!document.getElementById('nodata').checked && !item.hasOwnProperty('min_price'))
+				continue;
+			var rarity = item.rarity;
+			if(rarity === "common" && !document.getElementById('common').checked)
+				continue;
+			if(rarity === "uncommon" && !document.getElementById('uncommon').checked)
+				continue;
+			if(rarity === "rare" && !document.getElementById('rare').checked)
+				continue;
+			if(rarity === "legendary" && !document.getElementById('prime').checked)
+				continue;
+			appendRow(item);
+		}
+}
+
+function showRelicOpening(){
+document.getElementById('relicOpening').style.display = "block";
+document.getElementById('relicanalysis').style.display = "none";
+document.getElementById('modanalysis').style.display = "none";
+}
+
+function showRelicAnalysis(){
+document.getElementById('relicOpening').style.display = "none";
+document.getElementById('modanalysis').style.display = "none";
+document.getElementById('relicanalysis').style.display = "block";
+}
+
+function showModAnalysis(){
+document.getElementById('relicOpening').style.display = "none";
+document.getElementById('relicanalysis').style.display = "none";
+document.getElementById('modanalysis').style.display = "block";
+}
+</script>
+ 
+</body>
+</html>
