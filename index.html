@@ -205,6 +205,7 @@ for (var i = 0; i < arrayLength; i++) {
 			 relic[j] = items[iname];
 		}
 	}
+	relic[8] = i;
 	var o = document.createElement("option");
 	o.text = relics[i][0];
 	document.getElementById("openingRelics1").add(o);
@@ -226,7 +227,7 @@ updateRelicAnalysisTable();
 
 
 updateTable();
-
+showRelicOpening();
     //Do something
 }))
 
@@ -415,12 +416,18 @@ function showRelicOpening(){
 document.getElementById('relicOpening').style.display = "block";
 document.getElementById('relicanalysis').style.display = "none";
 document.getElementById('modanalysis').style.display = "none";
+	relics.sort(function(a, b){
+			return a[8]-b[8];
+	})
 }
 
 function showRelicAnalysis(){
 document.getElementById('relicOpening').style.display = "none";
 document.getElementById('modanalysis').style.display = "none";
 document.getElementById('relicanalysis').style.display = "block";
+		relics.sort(function(a, b){
+			return b[7] - a[7];
+	})
 }
 
 function showModAnalysis(){
