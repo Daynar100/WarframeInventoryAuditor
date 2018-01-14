@@ -334,7 +334,7 @@ namespace WarframeInventoryAuditor
                 catch (Exception e)
                 { }
                 await Task.Delay(1000);
-                if (!item.TryGetValue("local_thumb", out string file_name) || !File.Exists(file_name) || thumb_url != "")
+                if ((!item.TryGetValue("local_thumb", out string file_name) || !File.Exists(file_name)) && thumb_url != "")
                 {
                     try
                     {
